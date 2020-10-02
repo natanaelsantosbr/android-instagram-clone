@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/logo" />
 
     <Button
-        android:id="@+id/buttonLoginEntrar"
+        android:id="@+id/buttonCadastrar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -38,14 +38,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:onClick="abrirCadastro"
-        android:text="Cadastra-se"
+        android:text="Cadastrar-se"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoginEntrar" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonCadastrar" />
 
     <EditText
         android:id="@+id/editCadastroEmail"
