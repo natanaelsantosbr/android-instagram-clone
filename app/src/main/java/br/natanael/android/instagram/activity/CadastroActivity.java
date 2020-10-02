@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CpuUsageInfo;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,9 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-
-import java.security.PrivilegedAction;
-import java.sql.SQLTransactionRollbackException;
 
 import br.natanael.android.instagram.R;
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
@@ -133,10 +129,6 @@ public class CadastroActivity extends AppCompatActivity {
                             }
                         }
                 );
-
-
-
-
     }
 
     private void adicionarToast(String mensagem) {
@@ -148,7 +140,9 @@ public class CadastroActivity extends AppCompatActivity {
         campoEmail = findViewById(R.id.editCadastroEmail);
         campoSenha = findViewById(R.id.editCadastroSenha);
 
-        botaoCadastrar = findViewById(R.id.buttonCadastrar);
+        botaoCadastrar = findViewById(R.id.buttonEntrar);
         progressBar = findViewById(R.id.progressCadastro);
+
+        campoNome.requestFocus();
     }
 }
