@@ -1,8 +1,10 @@
-package br.natanael.android.instagram;
+package br.natanael.android.instagram.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import br.natanael.android.instagram.R;
 
 public class MainActivity extends AppCompatActivity {
 
