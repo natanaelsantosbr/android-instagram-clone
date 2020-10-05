@@ -125,9 +125,9 @@ public class LoginActivity extends AppCompatActivity {
         campoSenha = findViewById(R.id.editLoginSenha);
         botaoEntrar = findViewById(R.id.buttonEntrar);
         progressBar = findViewById(R.id.progressLogin);
+        campoEmail.requestFocus();
         autenticacao  = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        campoEmail.requestFocus();
     }
 
     public void abrirCadastro(View view)
@@ -146,7 +146,4 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     }
-
-
-
 }
