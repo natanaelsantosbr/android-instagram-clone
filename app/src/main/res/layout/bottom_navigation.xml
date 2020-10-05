@@ -3,11 +3,11 @@
 <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bnve"
+    android:id="@+id/bottomNavigation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="@color/colorPrimary"
-    app:itemIconTint="@android:color/darker_gray"
-    app:itemTextColor="@android:color/darker_gray"
+    app:itemIconTint="@android:color/black"
+    app:itemTextColor="@android:color/black"
     app:menu="@menu/menu_bottom_navigation" />
