@@ -33,5 +33,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:18.0.0'
     implementation 'com.google.firebase:firebase-auth:18.0.0'
 
+    //Dependencias bottom navigationEx
+    implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+
+
 
 }
