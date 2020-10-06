@@ -11,6 +11,7 @@ public class ConfiguracaoFirebase {
     private static DatabaseReference referenciaFirebase;
     private static FirebaseAuth referenciaAutenticacao;
 
+
     //retorna a instancia do FirebaseAuth
     public static FirebaseAuth getFirebaseAutenticacao()
     {
