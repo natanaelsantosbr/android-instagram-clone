@@ -1,5 +1,10 @@
 package br.natanael.android.instagram.model;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+
+import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
+
 public class Usuario {
     private String id;
     private String nome;
@@ -35,6 +40,7 @@ public class Usuario {
         this.email = email;
     }
 
+    @Exclude
     public String getSenha() {
         return senha;
     }
@@ -49,5 +55,14 @@ public class Usuario {
 
     public void setCaminhoFoto(String caminhoFoto) {
         this.caminhoFoto = caminhoFoto;
+    }
+
+    public void salvar() {
+        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebase();
+        DatabaseReference usuariosRef = firebaseRef
+                .child("usuarios")
+                .child(getId());
+
+        usuariosRef.setValue(this);
     }
 }
