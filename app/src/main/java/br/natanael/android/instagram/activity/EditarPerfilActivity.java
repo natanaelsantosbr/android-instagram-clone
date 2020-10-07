@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
     private Usuario usuarioLogado;
     private static final int SELECAO_GALERIA = 200;
     private StorageReference storageRef;
+    private ProgressBar progressBarEditarFoto;
 
 
     @Override
@@ -92,6 +94,8 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
                 if(imagem != null)
                 {
+                    progressBarEditarFoto.setVisibility(View.VISIBLE);
+
                     imageEditarPerfil.setImageBitmap(imagem);
 
                     //Recuperar dados da imagem para o firebase
@@ -111,11 +115,13 @@ public class EditarPerfilActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(EditarPerfilActivity.this, "Erro ao salvar uma imagem", Toast.LENGTH_SHORT).show();
+                            progressBarEditarFoto.setVisibility(View.GONE);
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(EditarPerfilActivity.this, "Sucesso ao fazer o upload da imagem", Toast.LENGTH_SHORT).show();
+                            progressBarEditarFoto.setVisibility(View.GONE);
                         }
                     });
 
@@ -167,7 +173,9 @@ public class EditarPerfilActivity extends AppCompatActivity {
         editNomePerfil = findViewById(R.id.editNomePerfil);
         editEmailPerfil = findViewById(R.id.editEmailPerfil);
         buttonSalvarAlteracoes = findViewById(R.id.buttonSalvarAlteracoes);
+        progressBarEditarFoto = findViewById(R.id.progressBarEditarFoto);
         editEmailPerfil.setFocusable(false);
+        progressBarEditarFoto.setVisibility(View.GONE);
     }
 
     private void configurarToolbar() {
