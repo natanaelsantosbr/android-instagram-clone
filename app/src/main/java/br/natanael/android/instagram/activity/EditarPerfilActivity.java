@@ -3,6 +3,7 @@ package br.natanael.android.instagram.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -61,5 +62,11 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
         //Alterar o icone do botao voltar
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 }
