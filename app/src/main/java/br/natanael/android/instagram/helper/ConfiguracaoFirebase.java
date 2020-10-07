@@ -1,8 +1,11 @@
 package br.natanael.android.instagram.helper;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.PropertyResourceBundle;
 
@@ -10,6 +13,7 @@ public class ConfiguracaoFirebase {
 
     private static DatabaseReference referenciaFirebase;
     private static FirebaseAuth referenciaAutenticacao;
+    private static StorageReference storage;
 
 
     //retorna a instancia do FirebaseAuth
@@ -28,4 +32,12 @@ public class ConfiguracaoFirebase {
 
         return referenciaFirebase;
     }
+
+    public static StorageReference getFirebaseStorage() {
+        if(storage == null)
+            storage = FirebaseStorage.getInstance().getReference();
+
+        return storage;
+    }
+
 }
