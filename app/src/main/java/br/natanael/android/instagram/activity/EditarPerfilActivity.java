@@ -16,8 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
@@ -41,6 +44,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
     private static final int SELECAO_GALERIA = 200;
     private StorageReference storageRef;
     private ProgressBar progressBarEditarFoto;
+    private String identificadorUsuario;
 
 
     @Override
@@ -105,12 +109,12 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
 
                     //Salvar imagem no firebase
-                    StorageReference imagemRef = storageRef
+                    final StorageReference imagemRef = storageRef
                             .child("imagens")
                             .child("perfil")
-                            .child("perfil.jpeg");
+                            .child(identificadorUsuario + ".jpeg");
 
-                    UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
+                    final UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
                     uploadTask.addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
@@ -121,7 +125,16 @@ public class EditarPerfilActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(EditarPerfilActivity.this, "Sucesso ao fazer o upload da imagem", Toast.LENGTH_SHORT).show();
-                            progressBarEditarFoto.setVisibility(View.GONE);
+
+
+                            imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    Uri url = task.getResult();
+                                    atualizarFotoUsuario(url);
+                                    progressBarEditarFoto.setVisibility(View.GONE);
+                                }
+                            });
                         }
                     });
 
@@ -135,6 +148,19 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    private void atualizarFotoUsuario(Uri url) {
+        //Atualizar foto do perfil
+        UsuarioFirebase.atualizarFotoUsuario(url);
+
+        //Atualizar foto do firebase
+        usuarioLogado.setNome(url.toString());
+
+        usuarioLogado.atualizar();
+
+        Toast.makeText(EditarPerfilActivity.this, "Sua foto foi alterada", Toast.LENGTH_SHORT).show();
+
     }
 
     private void salvarAlteracoes() {
@@ -163,6 +189,21 @@ public class EditarPerfilActivity extends AppCompatActivity {
         final FirebaseUser usuarioPerfil = UsuarioFirebase.getUsuarioAtual();
         editNomePerfil.setText(usuarioPerfil.getDisplayName());
         editEmailPerfil.setText(usuarioPerfil.getEmail());
+        identificadorUsuario = UsuarioFirebase.getIdentificadorUsuario();
+
+        Uri url = usuarioPerfil.getPhotoUrl();
+
+        if(url != null)
+        {
+            Glide.with(EditarPerfilActivity.this)
+                    .load(url)
+                    .into(imageEditarPerfil);
+        }
+        else
+        {
+            imageEditarPerfil.setImageResource(R.drawable.avatar);
+        }
+
     }
 
     private void inicializarComponentes() {
