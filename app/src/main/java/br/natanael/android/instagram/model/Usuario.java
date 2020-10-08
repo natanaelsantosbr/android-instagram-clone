@@ -8,6 +8,7 @@ import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.RecursiveTask;
 
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
 
@@ -17,6 +18,7 @@ public class Usuario {
     private String email;
     private String senha;
     private String caminhoFoto;
+    private String nomeMinusculo;
 
     public Usuario() {
 
@@ -63,6 +65,15 @@ public class Usuario {
         this.caminhoFoto = caminhoFoto;
     }
 
+    public String getNomeMinusculo() {
+        if(!getNome().isEmpty())
+        {
+            return getNome().toLowerCase();
+        }
+
+        return  getNome();
+    }
+
     public void salvar() {
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebase();
         DatabaseReference usuariosRef = firebaseRef
@@ -87,6 +98,7 @@ public class Usuario {
         HashMap<String, Object> usuarioMap = new HashMap<>();
         usuarioMap.put("email", getEmail());
         usuarioMap.put("nome", getNome());
+        usuarioMap.put("nomeMinusculo", getNomeMinusculo());
         usuarioMap.put("id", getId());
         usuarioMap.put("caminhoFoto", getCaminhoFoto());
 

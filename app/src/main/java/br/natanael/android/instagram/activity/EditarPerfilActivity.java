@@ -155,7 +155,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
         UsuarioFirebase.atualizarFotoUsuario(url);
 
         //Atualizar foto do firebase
-        usuarioLogado.setNome(url.toString());
+        usuarioLogado.setCaminhoFoto(url.toString());
 
         usuarioLogado.atualizar();
 
