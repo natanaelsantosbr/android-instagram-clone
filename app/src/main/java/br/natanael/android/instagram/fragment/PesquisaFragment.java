@@ -2,6 +2,7 @@ package br.natanael.android.instagram.fragment;
 
 
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.SearchView;
 import android.widget.TableRow;
 
@@ -23,12 +25,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.natanael.android.instagram.R;
+import br.natanael.android.instagram.activity.PerfilAmigoActivity;
 import br.natanael.android.instagram.adapter.AdapterPesquisa;
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
+import br.natanael.android.instagram.helper.RecyclerItemClickListener;
 import br.natanael.android.instagram.model.Usuario;
 
 /**
@@ -70,6 +75,33 @@ public class PesquisaFragment extends Fragment {
 
         adapterPesquisa = new AdapterPesquisa(listaUsuarios, getActivity());
         recyclerPesquisa.setAdapter(adapterPesquisa);
+
+        recyclerPesquisa.addOnItemTouchListener(new RecyclerItemClickListener(
+                getActivity(),
+                recyclerPesquisa,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Usuario usuarioSelecionado = listaUsuarios.get(position);
+                        Intent i = new Intent(getActivity(), PerfilAmigoActivity.class);
+                        i.putExtra("usuarioSelecionado", usuarioSelecionado);
+                        startActivity(i);
+
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    }
+                }
+        ) {
+        });
+
 
         //configura searchView
         searchViewPesquisa.setQueryHint("Buscar usuários");

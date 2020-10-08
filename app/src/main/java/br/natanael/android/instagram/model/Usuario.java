@@ -6,13 +6,14 @@ import android.security.keystore.UserPresenceUnavailableException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.RecursiveTask;
 
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
 
-public class Usuario {
+public class Usuario implements Serializable {
     private String id;
     private String nome;
     private String email;
