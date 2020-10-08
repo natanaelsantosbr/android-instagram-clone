@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CpuUsageInfo;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TableRow;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.natanael.android.instagram.R;
+import br.natanael.android.instagram.adapter.AdapterPesquisa;
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
 import br.natanael.android.instagram.model.Usuario;
 
@@ -38,6 +41,8 @@ public class PesquisaFragment extends Fragment {
 
     private List<Usuario> listaUsuarios;
     private DatabaseReference usuariosRef;
+
+    private AdapterPesquisa adapterPesquisa;
     
 
     public PesquisaFragment() {
@@ -58,6 +63,14 @@ public class PesquisaFragment extends Fragment {
         usuariosRef = ConfiguracaoFirebase.getFirebase()
                 .child("usuarios");
 
+
+        //Configurar RecyclerView
+        recyclerPesquisa.setHasFixedSize(true);
+        recyclerPesquisa.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        adapterPesquisa = new AdapterPesquisa(listaUsuarios, getActivity());
+        recyclerPesquisa.setAdapter(adapterPesquisa);
+
         //configura searchView
         searchViewPesquisa.setQueryHint("Buscar usuários");
         searchViewPesquisa.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -76,6 +89,8 @@ public class PesquisaFragment extends Fragment {
             }
         });
 
+
+
         return  view;
     }
 
@@ -86,7 +101,7 @@ public class PesquisaFragment extends Fragment {
 
         //Pesquisa usuario caso tenha texto na pesquisa
 
-        if(texto.length() > 0)
+        if(texto.length() >= 3)
         {
             Query query = usuariosRef.orderByChild("nomeMinusculo")
                     .startAt(texto)
@@ -95,14 +110,16 @@ public class PesquisaFragment extends Fragment {
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    listaUsuarios.clear();
                     for (DataSnapshot ds : dataSnapshot.getChildren())
                     {
                         listaUsuarios.add(ds.getValue(Usuario.class));
                     }
 
-                    int total = listaUsuarios.size();
+                    adapterPesquisa.notifyDataSetChanged();
 
-                    Log.i("totalUsuarios","total: " + total);
+                    /*int total = listaUsuarios.size();
+                    Log.i("totalUsuarios","total: " + total);*/
 
                 }
 
