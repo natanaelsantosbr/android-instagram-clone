@@ -63,6 +63,10 @@ public class PesquisaFragment extends Fragment {
         searchViewPesquisa = view.findViewById(R.id.searchViewPesquisa);
         recyclerPesquisa  = view.findViewById(R.id.recyclerPesquisa);
 
+        searchViewPesquisa.setFocusable(true);
+        searchViewPesquisa.setIconified(false);
+        searchViewPesquisa.requestFocusFromTouch();
+
         //Configuracao Inicial
         listaUsuarios = new ArrayList<>();
         usuariosRef = ConfiguracaoFirebase.getFirebase()
