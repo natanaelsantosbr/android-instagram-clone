@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 
 import br.natanael.android.instagram.R;
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
+import br.natanael.android.instagram.helper.Permissao;
 import br.natanael.android.instagram.helper.UsuarioFirebase;
 import br.natanael.android.instagram.model.Usuario;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -46,11 +48,17 @@ public class EditarPerfilActivity extends AppCompatActivity {
     private ProgressBar progressBarEditarFoto;
     private String identificadorUsuario;
 
+    private String[] permissoesNecessarias = new String[] {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil);
+
+        //Validar permissoes
+        Permissao.validarPermissoes(permissoesNecessarias, this, 1);
 
         inicializarComponentes();
 
