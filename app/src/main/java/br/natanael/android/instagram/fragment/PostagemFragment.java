@@ -3,6 +3,8 @@ package br.natanael.android.instagram.fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,7 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.io.ByteArrayOutputStream;
+
+import javax.xml.transform.Result;
+
 import br.natanael.android.instagram.R;
+import br.natanael.android.instagram.activity.FiltroActivity;
 import br.natanael.android.instagram.helper.Permissao;
 
 /**
@@ -79,4 +86,49 @@ public class PostagemFragment extends Fragment {
         return  view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == getActivity().RESULT_OK)
+        {
+            Bitmap imagem = null;
+
+            try {
+                //validar tipo de selecao
+                switch (requestCode)
+                {
+                    case SELECAO_CAMERA:
+                        imagem = (Bitmap) data.getExtras().get("data");
+                        break;
+                    case SELECAO_GALERIA:
+                        Uri localDaImagemSelecionada = data.getData();
+                        imagem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), localDaImagemSelecionada);
+                        break;
+                }
+
+                if(imagem != null)
+                {
+                    //Converter imagem em byte array
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    imagem.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                    byte[] dadosImagem = baos.toByteArray();
+
+                    //Envia imagem escolhida para aplicacao de filtro
+                    Intent i = new Intent(getActivity(), FiltroActivity.class);
+                    i.putExtra("fotoEscolhida", dadosImagem);
+                    startActivity(i);
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+
+
+    }
 }
