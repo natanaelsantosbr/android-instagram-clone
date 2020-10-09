@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import br.natanael.android.instagram.R;
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
@@ -244,6 +245,29 @@ public class PerfilAmigoActivity extends AppCompatActivity {
 
         buttonAcaoPerfil.setText("Seguindo");
         buttonAcaoPerfil.setOnClickListener(null);
+
+        //Incremetar seguindo do usuario logado
+        int seguindo = logado.getSeguindo() + 1;
+
+        DatabaseReference usuarioSeguindo = usuariosRef
+                .child(logado.getId());
+
+
+        HashMap<String, Object> dadosSeguindo = new HashMap<>();
+        dadosSeguindo.put("seguindo", seguindo);
+        usuarioSeguindo.updateChildren(dadosSeguindo);
+
+
+        //Incrementar seguidores do usuario logado
+        int seguidores = amigo.getSeguidores() + 1;
+
+        DatabaseReference usuarioSeguidores = usuariosRef
+                .child(amigo.getId());
+
+
+        HashMap<String, Object> dadosSeguidores = new HashMap<>();
+        dadosSeguidores.put("seguidores", seguidores);
+        usuarioSeguidores.updateChildren(dadosSeguidores);
     }
 
 
