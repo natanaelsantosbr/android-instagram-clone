@@ -48,7 +48,7 @@ public class AdapterPesquisa extends RecyclerView.Adapter<AdapterPesquisa.MyView
 
         holder.nome.setText(usuario.getNome());
 
-        if(!usuario.getCaminhoFoto().isEmpty())
+        if(usuario.getCaminhoFoto() != null)
         {
             Uri url = Uri.parse(usuario.getCaminhoFoto());
 
