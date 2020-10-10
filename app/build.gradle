@@ -44,4 +44,7 @@ dependencies {
     //Glide
     implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
 
+    //Android Photo Filters
+    implementation 'info.androidhive:imagefilters:1.0.7'
+
 }
