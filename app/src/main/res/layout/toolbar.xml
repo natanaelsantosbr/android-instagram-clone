@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="61dp">
 
@@ -7,8 +8,19 @@
         android:id="@+id/toolbarPrincipal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="right|end"
         android:background="?attr/colorPrimary"
         android:elevation="5dp"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        android:theme="?attr/actionBarTheme">
+
+        <ProgressBar
+            android:id="@+id/progressPostagem"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+    </androidx.appcompat.widget.Toolbar>
+
 </FrameLayout>

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -63,6 +64,8 @@ public class FiltroActivity extends AppCompatActivity {
 
     private String idUsuarioLogado;
 
+    private ProgressBar progressPostagem;
+
 
 
     @Override
@@ -79,7 +82,8 @@ public class FiltroActivity extends AppCompatActivity {
         //Inicializar componentes
         imageFotoEscolhida = findViewById(R.id.imageFotoEscolhida);
         recyclerFiltros = findViewById(R.id.recyclerFiltros);
-
+        progressPostagem = findViewById(R.id.progressPostagem);
+        progressPostagem.setVisibility(View.GONE);
         configurarToolbar();
 
         //Recupera a imagem escolhida pelo Usuario
@@ -198,6 +202,7 @@ public class FiltroActivity extends AppCompatActivity {
     }
 
     private void publicarPostagem() {
+        progressPostagem.setVisibility(View.VISIBLE);
         final Postagem postagem = new Postagem();
 
         postagem.setIdUsuario(idUsuarioLogado);
@@ -224,7 +229,7 @@ public class FiltroActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
 
                 Toast.makeText(FiltroActivity.this, "Erro ao salvar uma imagem, tente novamente", Toast.LENGTH_SHORT).show();
-                //progressBarEditarFoto.setVisibility(View.GONE);
+                progressPostagem.setVisibility(View.GONE);
 
 
             }
@@ -243,12 +248,13 @@ public class FiltroActivity extends AppCompatActivity {
 
                         if(postagem.salvar())
                         {
+                            progressPostagem.setVisibility(View.GONE);
                             Toast.makeText(FiltroActivity.this, "Sucesso ao fazer o upload da imagem", Toast.LENGTH_SHORT).show();
                             finish();
                         }
 
                         //atualizarFotoUsuario(url);
-                        //progressBarEditarFoto.setVisibility(View.GONE);
+
                     }
                 });
             }
