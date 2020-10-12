@@ -17,12 +17,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import br.natanael.android.instagram.R;
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
 import br.natanael.android.instagram.helper.UsuarioFirebase;
+import br.natanael.android.instagram.model.Postagem;
 import br.natanael.android.instagram.model.Usuario;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -44,10 +47,12 @@ public class PerfilAmigoActivity extends AppCompatActivity {
     private DatabaseReference usuarioLogadoRef;
     private DatabaseReference seguidoresRef;
     private DatabaseReference firebaseRef;
+    private DatabaseReference postagensUsuarioRef;
 
     private ValueEventListener valueEventListenerPerfilAmigo;
 
     private String idUsuarioLogado;
+
 
 
 
@@ -90,7 +95,31 @@ public class PerfilAmigoActivity extends AppCompatActivity {
                     .load(R.drawable.avatar)
                     .into(imagePerfil);
         }
+
+
     }
+
+    private void carregarFotosPostagem() {
+        postagensUsuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> urlFotos = new ArrayList<>();
+                for (DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    Postagem postagem = ds.getValue(Postagem.class);
+                    urlFotos.add((postagem.getCaminhoFoto()));
+                }
+                textPublicacoes.setText(String.valueOf(urlFotos.size()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
     private void recuperarDadosDoUsuarioLogado() {
         usuarioLogadoRef = usuariosRef.child(idUsuarioLogado);
@@ -98,7 +127,14 @@ public class PerfilAmigoActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usuarioLogado = dataSnapshot.getValue(Usuario.class);
+
+                postagensUsuarioRef = ConfiguracaoFirebase.getFirebase()
+                        .child("postagens")
+                        .child(usuarioSelecionado.getId());
+
                 verificaSegueAmigo();
+
+                carregarFotosPostagem();
             }
 
             @Override
@@ -143,7 +179,7 @@ public class PerfilAmigoActivity extends AppCompatActivity {
                 Usuario usuario = dataSnapshot.getValue(Usuario.class);
 
 
-                textPublicacoes.setText(String.valueOf(usuario.getPostagens()) );
+                //textPublicacoes.setText(String.valueOf(usuario.getPostagens()) );
                 textSeguidores.setText(String.valueOf(usuario.getSeguidores()));
                 textSeguindo.setText(String.valueOf(usuario.getSeguindo()));
             }
