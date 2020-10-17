@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -63,6 +65,7 @@ public class PerfilAmigoActivity extends AppCompatActivity {
     private GridView gridViewPerfil;
     private AdapterGrid adapterGrid;
 
+    private List<Postagem> postagens;
 
 
 
@@ -121,6 +124,7 @@ public class PerfilAmigoActivity extends AppCompatActivity {
         ImageLoader.getInstance().init(configuration);
     }
     private void carregarFotosPostagem() {
+        postagens = new ArrayList<>();
         postagensUsuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -133,6 +137,8 @@ public class PerfilAmigoActivity extends AppCompatActivity {
                 for (DataSnapshot ds: dataSnapshot.getChildren())
                 {
                     Postagem postagem = ds.getValue(Postagem.class);
+                    urlsFotos.add(postagem.getCaminhoFoto());
+                    postagens.add(postagem);
                 }
 
                 //Configurar o adapter
@@ -165,6 +171,17 @@ public class PerfilAmigoActivity extends AppCompatActivity {
                 inicializarImageLoader();
 
                 carregarFotosPostagem();
+
+                gridViewPerfil.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Postagem postagem = postagens.get(position);
+                        Intent i = new Intent(getApplicationContext(), VisualizarPostagemActivity.class);
+                        i.putExtra("postagem", postagem);
+                        i.putExtra("usuario", usuarioSelecionado);
+                        startActivity(i);
+                    }
+                });
             }
 
             @Override
