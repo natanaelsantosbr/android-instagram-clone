@@ -270,6 +270,7 @@ public class PerfilAmigoActivity extends AppCompatActivity {
 
     private  void verificaSegueAmigo() {
         DatabaseReference seguidorRef = seguidoresRef
+                .child(usuarioSelecionado.getId())
                 .child(idUsuarioLogado);
 
         //Executar apenas uma vez
@@ -314,27 +315,27 @@ public class PerfilAmigoActivity extends AppCompatActivity {
         }
     }
 
-    private void salvarSeguidor(Usuario logado, Usuario amigo) {
+    private void salvarSeguidor(Usuario uLogado, Usuario uAmigo) {
 
-        HashMap<String, Object> dadosAmigos = new HashMap<>();
-        dadosAmigos.put("nome", amigo.getNome());
-        dadosAmigos.put("caminhoFoto", amigo.getCaminhoFoto());
+        HashMap<String, Object> dadosUsuarioLogado = new HashMap<>();
+        dadosUsuarioLogado.put("nome", uLogado.getNome());
+        dadosUsuarioLogado.put("caminhoFoto", uLogado.getCaminhoFoto());
 
 
         DatabaseReference seguidorRef = seguidoresRef
-                .child(logado.getId())
-                .child(amigo.getId());
+                .child(uAmigo.getId())
+                .child(uLogado.getId());
 
-        seguidorRef.setValue(dadosAmigos);
+        seguidorRef.setValue(dadosUsuarioLogado);
 
         buttonAcaoPerfil.setText("Seguindo");
         buttonAcaoPerfil.setOnClickListener(null);
 
         //Incremetar seguindo do usuario logado
-        int seguindo = logado.getSeguindo() + 1;
+        int seguindo = uLogado.getSeguindo() + 1;
 
         DatabaseReference usuarioSeguindo = usuariosRef
-                .child(logado.getId());
+                .child(uLogado.getId());
 
 
         HashMap<String, Object> dadosSeguindo = new HashMap<>();
@@ -343,10 +344,10 @@ public class PerfilAmigoActivity extends AppCompatActivity {
 
 
         //Incrementar seguidores do usuario logado
-        int seguidores = amigo.getSeguidores() + 1;
+        int seguidores = uAmigo.getSeguidores() + 1;
 
         DatabaseReference usuarioSeguidores = usuariosRef
-                .child(amigo.getId());
+                .child(uAmigo.getId());
 
 
         HashMap<String, Object> dadosSeguidores = new HashMap<>();
