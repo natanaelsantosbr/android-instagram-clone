@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import br.natanael.android.instagram.R;
@@ -74,6 +75,7 @@ public class FeedFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     listaFeed.add(ds.getValue(Feed.class));
                 }
+                Collections.reverse(listaFeed);
                 adapterFeed.notifyDataSetChanged();
             }
             @Override
