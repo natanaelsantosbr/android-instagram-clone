@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PostProcessor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,11 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -73,9 +70,12 @@ public class FiltroActivity extends AppCompatActivity {
 
     private DatabaseReference usuariosRef;
     private DatabaseReference usuarioLogadoRef;
+    private DatabaseReference firebaseRef;
     private Usuario usuarioLogado;
 
     private AlertDialog dialog;
+
+    private DataSnapshot seguidoresSnapshot;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,7 @@ public class FiltroActivity extends AppCompatActivity {
 
         //configuracoes inciais
         listaFiltros = new ArrayList<>();
+        firebaseRef = ConfiguracaoFirebase.getFirebase();
         idUsuarioLogado = UsuarioFirebase.getIdentificadorUsuario();
         textDescricaoFiltro = findViewById(R.id.textDescricaoFiltro);
         usuariosRef = ConfiguracaoFirebase.getFirebase().child("usuarios");
@@ -95,7 +96,7 @@ public class FiltroActivity extends AppCompatActivity {
         recyclerFiltros = findViewById(R.id.recyclerFiltros);
         configurarToolbar();
 
-        recuperarDadosDoUsuarioLogado();
+        recuperarDadosPostagem();
 
         //Recupera a imagem escolhida pelo Usuario
         Bundle bundle = getIntent().getExtras();
@@ -159,7 +160,7 @@ public class FiltroActivity extends AppCompatActivity {
 
     }
 
-    private void recuperarDadosDoUsuarioLogado() {
+    private void recuperarDadosPostagem() {
         abrirDialogCarregamento("Carregando dados, aguarde!");
         usuarioLogadoRef = usuariosRef.child(idUsuarioLogado);
         usuarioLogadoRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -168,7 +169,24 @@ public class FiltroActivity extends AppCompatActivity {
 
                 //Recuperar usuario logado
                 usuarioLogado = dataSnapshot.getValue(Usuario.class);
-                dialog.cancel();
+
+                final DatabaseReference seguiredoresRef = firebaseRef.child("seguidores")
+                        .child(idUsuarioLogado);
+
+                seguiredoresRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        seguidoresSnapshot = dataSnapshot;
+                        dialog.cancel();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
             }
 
             @Override
@@ -285,13 +303,14 @@ public class FiltroActivity extends AppCompatActivity {
                         Uri url = task.getResult();
                         postagem.setCaminhoFoto(url.toString());
 
-                        if(postagem.salvar())
+                        int quantidade = usuarioLogado.getPostagens() + 1;
+                        usuarioLogado.setPostagens(quantidade);
+                        usuarioLogado.atualizarQuantidadeDePostagem();
+
+
+
+                        if(postagem.salvar(seguidoresSnapshot))
                         {
-                            int quantidade = usuarioLogado.getPostagens() + 1;
-                            usuarioLogado.setPostagens(quantidade);
-                            usuarioLogado.atualizarQuantidadeDePostagem();
-
-
                             Toast.makeText(FiltroActivity.this, "Sucesso ao fazer o upload da imagem", Toast.LENGTH_SHORT).show();
                             dialog.cancel();
                             finish();
