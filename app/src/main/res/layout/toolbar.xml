@@ -14,13 +14,6 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
-        <ProgressBar
-            android:id="@+id/progressPostagem"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:visibility="gone"
-            tools:visibility="gone" />
-
     </androidx.appcompat.widget.Toolbar>
 
 </FrameLayout>
