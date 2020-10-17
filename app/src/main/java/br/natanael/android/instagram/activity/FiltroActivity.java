@@ -27,6 +27,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zomato.photofilters.FilterPack;
@@ -44,6 +48,7 @@ import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
 import br.natanael.android.instagram.helper.RecyclerItemClickListener;
 import br.natanael.android.instagram.helper.UsuarioFirebase;
 import br.natanael.android.instagram.model.Postagem;
+import br.natanael.android.instagram.model.Usuario;
 
 public class FiltroActivity extends AppCompatActivity {
     static
@@ -66,7 +71,10 @@ public class FiltroActivity extends AppCompatActivity {
 
     private ProgressBar progressPostagem;
 
-
+    private DatabaseReference usuariosRef;
+    private DatabaseReference usuarioLogadoRef;
+    private Usuario usuarioLogado;
+    private  boolean estaCarregando;
 
     @Override
 
@@ -78,6 +86,9 @@ public class FiltroActivity extends AppCompatActivity {
         listaFiltros = new ArrayList<>();
         idUsuarioLogado = UsuarioFirebase.getIdentificadorUsuario();
         textDescricaoFiltro = findViewById(R.id.textDescricaoFiltro);
+        usuariosRef = ConfiguracaoFirebase.getFirebase().child("usuarios");
+
+
 
         //Inicializar componentes
         imageFotoEscolhida = findViewById(R.id.imageFotoEscolhida);
@@ -85,6 +96,8 @@ public class FiltroActivity extends AppCompatActivity {
         progressPostagem = findViewById(R.id.progressPostagem);
         progressPostagem.setVisibility(View.GONE);
         configurarToolbar();
+
+        recuperarDadosDoUsuarioLogado();
 
         //Recupera a imagem escolhida pelo Usuario
         Bundle bundle = getIntent().getExtras();
@@ -135,6 +148,39 @@ public class FiltroActivity extends AppCompatActivity {
                 recuperarFiltros();
             }
         }
+    }
+
+    private void carregando(boolean estado ){
+        if(estado)
+        {
+            estaCarregando = true;
+            progressPostagem.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            estaCarregando = false;
+            progressPostagem.setVisibility(View.GONE);
+        }
+    }
+
+    private void recuperarDadosDoUsuarioLogado() {
+        carregando(true);
+        usuarioLogadoRef = usuariosRef.child(idUsuarioLogado);
+        usuarioLogadoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //Recuperar usuario logado
+                usuarioLogado = dataSnapshot.getValue(Usuario.class);
+                carregando(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void recuperarFiltros() {
@@ -202,67 +248,74 @@ public class FiltroActivity extends AppCompatActivity {
     }
 
     private void publicarPostagem() {
-        progressPostagem.setVisibility(View.VISIBLE);
-        final Postagem postagem = new Postagem();
+        if(estaCarregando){
+            Toast.makeText(getApplicationContext(), "Carregando dados, aguarde!", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            progressPostagem.setVisibility(View.VISIBLE);
+            final Postagem postagem = new Postagem();
 
-        postagem.setIdUsuario(idUsuarioLogado);
-        postagem.setDescricao(textDescricaoFiltro.getText().toString());
-
-
-        //Recuperar dados da imagem para o firebase
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imagemFiltro.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-        byte[] dadosImagem = baos.toByteArray();
-
-
-        //Salvar imagem no firebase storage
-        StorageReference storageRef = ConfiguracaoFirebase.getFirebaseStorage();
-
-        final StorageReference imagemRef = storageRef
-                .child("imagens")
-                .child("postagens")
-                .child(postagem.getId() + ".jpeg");
-
-        final UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Toast.makeText(FiltroActivity.this, "Erro ao salvar uma imagem, tente novamente", Toast.LENGTH_SHORT).show();
-                progressPostagem.setVisibility(View.GONE);
+            postagem.setIdUsuario(idUsuarioLogado);
+            postagem.setDescricao(textDescricaoFiltro.getText().toString());
 
 
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            //Recuperar dados da imagem para o firebase
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            imagemFiltro.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+            byte[] dadosImagem = baos.toByteArray();
+
+
+            //Salvar imagem no firebase storage
+            StorageReference storageRef = ConfiguracaoFirebase.getFirebaseStorage();
+
+            final StorageReference imagemRef = storageRef
+                    .child("imagens")
+                    .child("postagens")
+                    .child(postagem.getId() + ".jpeg");
+
+            final UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                    Toast.makeText(FiltroActivity.this, "Erro ao salvar uma imagem, tente novamente", Toast.LENGTH_SHORT).show();
+                    progressPostagem.setVisibility(View.GONE);
+
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
 
 
 
-                imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        Uri url = task.getResult();
-                        postagem.setCaminhoFoto(url.toString());
+                    imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            Uri url = task.getResult();
+                            postagem.setCaminhoFoto(url.toString());
 
-                        if(postagem.salvar())
-                        {
-                            progressPostagem.setVisibility(View.GONE);
-                            Toast.makeText(FiltroActivity.this, "Sucesso ao fazer o upload da imagem", Toast.LENGTH_SHORT).show();
-                            finish();
+                            if(postagem.salvar())
+                            {
+                                int quantidade = usuarioLogado.getPostagens() + 1;
+                                usuarioLogado.setPostagens(quantidade);
+                                usuarioLogado.atualizarQuantidadeDePostagem();
+
+
+                                progressPostagem.setVisibility(View.GONE);
+                                Toast.makeText(FiltroActivity.this, "Sucesso ao fazer o upload da imagem", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                            //atualizarFotoUsuario(url);
+
                         }
-
-                        //atualizarFotoUsuario(url);
-
-                    }
-                });
-            }
-        });
-
-
-
-
+                    });
+                }
+            });
+        }
     }
 
     @Override
