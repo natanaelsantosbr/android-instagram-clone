@@ -41,6 +41,8 @@ public class AdapterFeed extends RecyclerView.Adapter<AdapterFeed.MyViewHolder> 
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Feed feed = listaFeed.get(position);
 
+        //Teste de Commit
+
         //Carrega dados do feed
         Uri uriFotoUsuario = Uri.parse(feed.getFotoUsuario());
         Uri uriFotoPostagem = Uri.parse(feed.getFotoPostagem());
