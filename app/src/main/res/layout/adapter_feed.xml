@@ -90,7 +90,7 @@
 
         <com.like.LikeButton
             android:id="@+id/likeButtonFeed"
-            android:layout_width="30dp"
+            android:layout_width="40dp"
             android:layout_height="30dp"
             app:icon_size="30dp"
             app:icon_type="heart">
