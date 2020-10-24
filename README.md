@@ -1,5 +1,5 @@
 # android-instagram-clone
-Clonar as principais funcionalidades do Instagram
+Clonar as principais funcionalidades do Instagram utilizando Android
 
 <img src="https://user-images.githubusercontent.com/21367563/97065502-2a088580-1584-11eb-9a8f-70f825268359.jpg"/>
 
