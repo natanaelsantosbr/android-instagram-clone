@@ -6,11 +6,15 @@ Clonar as principais funcionalidades do Instagram
 <p>Veja as principais funcionalidade do app</p>
 
 <ul>
-  <li>Aplicar Filtros</li>
-  <li>Curtidas</li>
-  <li>Comentários</li>
+  <li>Tela de login</li>
+  <li>Tela de cadastro</li>
+  <li>Pesquisar amigos</li>
+  <li>Alterar dados do perfil</li>
+  <li>Upload de fotos e aplicar vários filtros</li>
   <li>Feed de Postagens</li>
-  <li>Seguir</li>
+  <li>Curtidas</li>
+  <li>Listar Comentários</li>
+  <li>Tela de Perfil</li>
   </ul>
 
 
