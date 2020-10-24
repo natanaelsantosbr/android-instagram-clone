@@ -1,15 +1,13 @@
 # android-instagram-clone
-Navigation Bottom, Firebase Auth, Toolbar
+Clonar as principais funcionalidades do Instagem
+
 
 Veja as principais funcionalidade do app
 
-Cadastrar Receita
-Cadastrar Despesa
-Listagem de Receitas e Despesas
-Exclusão de Receita/Despesa
-Slider
-Cadastrar e Autenticar (Email e Senha) pelo Firebase Auth
-Float Action Button
-Deslogar Usuario
-Exibir Menus
-Calendar View
+Aplicar Filtros
+Curtidas
+Comentarios
+Feed de Postagens
+Seguir
+
+
