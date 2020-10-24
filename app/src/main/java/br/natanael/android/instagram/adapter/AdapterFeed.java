@@ -1,6 +1,7 @@
 package br.natanael.android.instagram.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +17,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.internal.InternalTokenProvider;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 import java.util.List;
 
 import br.natanael.android.instagram.R;
+import br.natanael.android.instagram.activity.ComentariosActivity;
 import br.natanael.android.instagram.helper.ConfiguracaoFirebase;
 import br.natanael.android.instagram.helper.UsuarioFirebase;
 import br.natanael.android.instagram.model.Feed;
@@ -65,6 +68,15 @@ public class AdapterFeed extends RecyclerView.Adapter<AdapterFeed.MyViewHolder> 
 
         holder.descricao.setText(feed.getDescricao());
         holder.nome.setText(feed.getNomeUsuario());
+
+        holder.visualizarComentario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, ComentariosActivity.class);
+                i.putExtra("idPostagem", feed.getId());
+                context.startActivity(i);
+            }
+        });
 
         //Recuperar dados da postagem curtidade
         DatabaseReference curtidas = ConfiguracaoFirebase.getFirebase()
